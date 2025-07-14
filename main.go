@@ -9,7 +9,7 @@ import (
 
 func main() {
 	// Open .gz file
-	file, err := os.Open("/var/tmp/bufio_benchmarking/xaa30.csv.gz")
+	file, err := os.Open("/var/tmp/bufio_benchmarking/randomstrings.txt.gz")
 	if err != nil {
 		fmt.Printf("Error opening file: %v\n", err)
 		return
