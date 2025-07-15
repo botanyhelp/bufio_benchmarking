@@ -9,7 +9,7 @@ import (
 
 func main() {
 	// Open .gz file
-	file, err := os.Open("/var/tmp/bufio_benchmarking/randomstrings.txt.gz")
+	file, err := os.Open("/usr/lib/jvm/java-17-openjdk-amd64/man/man1/java.1.gz")
 	if err != nil {
 		fmt.Printf("Error opening file: %v\n", err)
 		return
