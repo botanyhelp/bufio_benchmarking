@@ -38,3 +38,6 @@ real    0m8.916s
 user    0m19.289s
 sys     0m2.844s
 ```
+
+* some of the hardcoded filepath things are commented out so that code may run in docker container which will not have a ton of gz files laying around
+* the dummy gz files are created on the fly and gzipped
