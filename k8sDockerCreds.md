@@ -7,6 +7,7 @@
 
 ```
 git clone https://github.com/botanyhelp/bufio_benchmarking.git
+git clone git@github.com:botanyhelp/bufio_benchmarking.git
 cd bufio_benchmarking
 go version
 go run main.go
