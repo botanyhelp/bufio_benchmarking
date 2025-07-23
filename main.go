@@ -8,7 +8,96 @@ import (
 	"log"
 )
 
+// main creates two gzip files, then opens them, reads them and counts bytes read
 func main() {
+	dummyContent := "This is some dummy content for the gzipped file."
+	fileName1 := "dummy1.txt.gz"
+
+	// Create a dummy gzipped file
+	file, err := os.Create(fileName1)
+	if err != nil {
+		log.Fatalf("Error creating file: %v", err)
+	}
+	defer file.Close()
+
+	gzWriter := gzip.NewWriter(file)
+	_, err = gzWriter.Write([]byte(dummyContent))
+	if err != nil {
+		log.Fatalf("Error writing to gzip writer: %v", err)
+	}
+	err = gzWriter.Close() // Important to close the gzip writer to flush data
+	if err != nil {
+		log.Fatalf("Error closing gzip writer: %v", err)
+	}
+	fmt.Printf("Dummy gzipped file '%s' created successfully.\n", fileName1)
+
+
+	dummyContent2 := "This is some dummy content for the gzipped file."
+	fileName2 := "dummy2.txt.gz"
+
+	// 1. Create a dummy gzipped file
+	file, err = os.Create(fileName2)
+	if err != nil {
+		log.Fatalf("Error creating file: %v", err)
+	}
+	defer file.Close()
+
+	gzWriter = gzip.NewWriter(file)
+	_, err = gzWriter.Write([]byte(dummyContent2))
+	if err != nil {
+		log.Fatalf("Error writing to gzip writer: %v", err)
+	}
+	err = gzWriter.Close() // Important to close the gzip writer to flush data
+	if err != nil {
+		log.Fatalf("Error closing gzip writer: %v", err)
+	}
+	fmt.Printf("Dummy gzipped file '%s' created successfully.\n", fileName2)
+
+
+	gzipFilePaths := []string{
+		"dummy1.txt.gz",
+		"dummy2.txt.gz",
+	}
+
+	for _, gzipFilePath := range gzipFilePaths {
+		// Open .gz file
+		//file, err := os.Open("/usr/lib/jvm/java-17-openjdk-amd64/man/man1/java.1.gz")
+		file, err := os.Open(gzipFilePath)
+		if err != nil {
+			fmt.Printf("Error opening file: %v\n", err)
+			return
+		}
+		defer file.Close()
+	
+		// Create gzip.Reader from opened file
+		gzipReader, err := gzip.NewReader(file)
+		if err != nil {
+			fmt.Printf("Error creating gzip reader: %v\n", err)
+			return
+		}
+		defer gzipReader.Close()
+	
+		// Read uncompressed data using a chosen buffer
+		buffer := make([]byte, 1024)
+		totalBytesRead :=0
+		for {
+			n, err := gzipReader.Read(buffer) // Read into the buffer
+			if n > 0 {
+				//fmt.Print(string(buffer[:n]))
+	      totalBytesRead += n
+			}
+			if err == io.EOF { // Check for end of file
+				break
+			}
+			if err != nil { // Handle other errors
+				fmt.Printf("Error reading from gzip reader: %v\n", err)
+				return
+			}
+		}
+		fmt.Printf("totalBytesRead: %d\nfile: %s\n\n", totalBytesRead, gzipFilePath)
+	}
+}
+
 	// there are usually gzip files in /usr/lib/ on linux machines.  
 	// these were found on my GCP cloudshell machine with this command:
 	// find /usr/lib/ -name "*.gz" -print > /var/tmp/gz_files.txt
@@ -123,90 +212,3 @@ func main() {
 		//"/usr/lib/jvm/java-17-openjdk-amd64/man/man1/javap.1.gz",
 		//"/usr/lib/jvm/java-17-openjdk-amd64/man/man1/jlink.1.gz",
 	//}
-	dummyContent := "This is some dummy content for the gzipped file."
-	fileName1 := "dummy1.txt.gz"
-
-	// 1. Create a dummy gzipped file
-	file, err := os.Create(fileName1)
-	if err != nil {
-		log.Fatalf("Error creating file: %v", err)
-	}
-	defer file.Close()
-
-	gzWriter := gzip.NewWriter(file)
-	_, err = gzWriter.Write([]byte(dummyContent))
-	if err != nil {
-		log.Fatalf("Error writing to gzip writer: %v", err)
-	}
-	err = gzWriter.Close() // Important to close the gzip writer to flush data
-	if err != nil {
-		log.Fatalf("Error closing gzip writer: %v", err)
-	}
-	fmt.Printf("Dummy gzipped file '%s' created successfully.\n", fileName1)
-
-
-	dummyContent2 := "This is some dummy content for the gzipped file."
-	fileName2 := "dummy2.txt.gz"
-
-	// 1. Create a dummy gzipped file
-	file, err = os.Create(fileName2)
-	if err != nil {
-		log.Fatalf("Error creating file: %v", err)
-	}
-	defer file.Close()
-
-	gzWriter = gzip.NewWriter(file)
-	_, err = gzWriter.Write([]byte(dummyContent2))
-	if err != nil {
-		log.Fatalf("Error writing to gzip writer: %v", err)
-	}
-	err = gzWriter.Close() // Important to close the gzip writer to flush data
-	if err != nil {
-		log.Fatalf("Error closing gzip writer: %v", err)
-	}
-	fmt.Printf("Dummy gzipped file '%s' created successfully.\n", fileName2)
-
-
-	gzipFilePaths := []string{
-		"dummy1.txt.gz",
-		"dummy2.txt.gz",
-	}
-
-	for _, gzipFilePath := range gzipFilePaths {
-		// Open .gz file
-		//file, err := os.Open("/usr/lib/jvm/java-17-openjdk-amd64/man/man1/java.1.gz")
-		file, err := os.Open(gzipFilePath)
-		if err != nil {
-			fmt.Printf("Error opening file: %v\n", err)
-			return
-		}
-		defer file.Close()
-	
-		// Create gzip.Reader from opened file
-		gzipReader, err := gzip.NewReader(file)
-		if err != nil {
-			fmt.Printf("Error creating gzip reader: %v\n", err)
-			return
-		}
-		defer gzipReader.Close()
-	
-		// Read uncompressed data using a chosen buffer
-		buffer := make([]byte, 1024)
-		totalBytesRead :=0
-		for {
-			n, err := gzipReader.Read(buffer) // Read into the buffer
-			if n > 0 {
-				//fmt.Print(string(buffer[:n]))
-	                        totalBytesRead += n
-			}
-			if err == io.EOF { // Check for end of file
-				break
-			}
-			if err != nil { // Handle other errors
-				fmt.Printf("Error reading from gzip reader: %v\n", err)
-				return
-			}
-		}
-		fmt.Printf("totalBytesRead: %d\nfile: %s\n\n", totalBytesRead, gzipFilePath)
-	}
-}
