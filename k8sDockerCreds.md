@@ -35,6 +35,8 @@ docker image ls
 * view existing Dockerfile
 * modify main.go and Dockerfile 
 * build and push new image to docker hub
+* from a remote command line like we have in GCP cloudshell, we will need to login via terminal because no browser is available:
+* **docker login -u botanyhelp**
 
 ```
 cat Dockerfile
